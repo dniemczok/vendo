@@ -1,0 +1,252 @@
+- hosts: DMZ-vendo
+  become: yes
+
+  vars:
+    uuser: postgres
+    upassword: $6$jw0PT73GQJr1L$6uZqOk70bWzHtVYVycuPQt5rps7n3rdlSN8MW4UM4S5JJ28XGIasrJrYdkKK/LBfZKf.c0ceUqWk/04ghYI4o/
+    path_psql: /opt/psql
+    dst_psql: /opt/psql/postgresql-10.8
+    ugit: https://github.com/dniemczok/vendo.git
+    utemp: "{{path_psql}}/template"
+    uvendo: "{{ dst_psql}}/contrib/vendo"
+    upgmp: "{{ dst_psql}}/contrib/pgmp-rel-1.0.2"
+    upg_trgm: "{{ dst_psql}}/contrib/pg_trgm"
+    uhstore: "{{ dst_psql}}/contrib/hstore"
+    uauto_explain: "{{ dst_psql}}/contrib/auto_explain"
+    umake: PG_CONFIG=/usr/local/pg10.8/bin/pg_config
+    uinitdb: su -l postgres -s /bin/sh -c "/usr/local/pg10.8/bin/initdb --encoding=UTF8 --local=pl_PL.UTF8 -D /opt/psql/data"
+    ubaza: /opt/psql/data
+    ucert: "{{ ubaza }}/certyfikaty"
+    sql1: echo "CREATE SCHEMA vendo;" | psql -U postgres -h localhost
+
+  tasks:
+
+#  - name:            Installacja wymaganych komponentow
+#    apt:
+#      update_cache:  yes
+#      name:          "{{ item }}"
+#      state:         present
+#    with_items:
+#      - mc
+#      - htop
+#      - nmon
+#      - gcc
+#      - zlib1g-dev
+#      - libreadline-dev
+#      - libcurl4-openssl-dev
+#      - libssl-dev
+#      - libgmp-dev
+#      - make
+#      - whois
+#      - python
+#      - python3-psycopg2
+#      #- postgresql-client-common
+#      #- postgresql-client-11
+#  - name: "Create group {{ uuser }} exists"
+#    group:
+#      name: "{{ uuser }}"
+#      state: present
+#
+#  - name: "Create a login user {{ uuser }}"
+#    user:
+#      name: "{{ uuser }}"
+#      password: "{{ upassword }}"
+#      groups: "{{ uuser }}"   # Empty by default.
+#      state: present
+#      shell: /bin/bash       # Defaults to /bin/bash
+#      system: no             # Defaults to no
+#      createhome: yes        # Defaults to yes
+#      home: "{{ path_psql}}"  # Defaults to /home/<username>
+#
+#  - name: Create a directory if it does not exist
+#    file:
+#      path: "{{ path_psql}}"
+#      owner: "{{ uuser }}"
+#      group: "{{ uuser }}"
+#      state: directory
+#      mode: '0755'
+#
+##  - name: Download PSQL-10
+##    get_url:
+#      url: http://ftp.postgresql.org/pub/source/v10.8/postgresql-10.8.tar.gz
+#      dest: "{{ path_psql}}"
+#      mode: '0777'
+
+#  - name: "Extract {{ path_psql}}/postgresql-10.8.tar.gz"
+#    unarchive:
+#      src:  "{{ path_psql}}/postgresql-10.8.tar.gz"
+#      dest:  "{{ path_psql}}"
+#      remote_src: yes
+
+##################  - name: Replace setting
+##################    lineinfile:
+##################      path: "{{dst_psql}}/src/include/utils/selfuncs.h"
+##################      regexp: '^#define DEFAULT_NUM_DISTINCT  200'
+##################      line: define DEFAULT_NUM_DISTINCT 200
+
+#  - name: Compile PSQL-10
+#    shell: "{{ item }}"
+#    args:
+#      chdir: "{{dst_psql}}/"
+#    with_items:
+#      - ./configure --with-openssl --prefix=/usr/local/pg10.8
+#      - make
+#      - make install
+
+#  - git:
+#      repo: "{{ugit}}"
+#      dest: "{{path_psql}}/template"
+
+#  - name: "Extract {{ dst_psql}}/contrib/vendo.tgz"
+#    unarchive:
+#      src:  "{{utemp}}/vendo.tgz"
+#      dest:  "{{ dst_psql}}/contrib/"
+#      remote_src: yes
+
+# - name: Make install vendo
+#   shell: "{{ item }}"
+#   args:
+#     chdir: "{{uvendo}}"
+#   with_items:
+#     - make
+#     - make install
+
+
+#  - name: "Extract {{ dst_psql}}/contrib/pgmp.tgz"
+#    unarchive:
+#      src:  "{{utemp}}/pgmp.tgz"
+#      dest:  "{{ dst_psql}}/contrib/"
+#      remote_src: yes
+
+#  - name: Make install pg_trgm
+#    shell: "{{ item }}"
+#    args:
+#      chdir: "{{ upg_trgm }}"
+#    with_items:
+#        - make
+#        - make install
+
+#  - name: Make install hstore
+#    shell: "{{ item }}"
+#    args:
+#      chdir: "{{ uhstore }}"
+#    with_items:
+#        - make
+#        - make install
+#
+#  - name: Make install auto_explain
+#    shell: "{{ item }}"
+#    args:
+#      chdir: "{{ uauto_explain }}"
+#    with_items:
+#        - make
+#        - make install
+#
+#  - name: Replace /etc/locale.gen
+#    lineinfile:
+#      path: "/etc/locale.gen"
+#      regexp: '^#pl_PL ISO-8859-2'
+#      line: pl_PL ISO-8859-2
+#
+#  - name: Replace /etc/locale.gen
+#    lineinfile:
+#      path: "/etc/locale.gen"
+#      regexp: '^#pl_PL.UTF-8 UTF-8'
+#      line: pl_PL.UTF-8 UTF-8
+
+#  - name: Aktualicacja locale-gen
+#    shell: "{{ item }}"
+#    args:
+#      chdir: "{{ dst_psql }}"
+#    with_items:
+#        - locale-gen
+
+#  - name: Create a directory data if it does not exist
+#    file:
+#      path: "{{ path_psql}}/data"
+#      owner: "{{ uuser }}"
+#      group: "{{ uuser }}"
+#      state: directory
+#      mode: '0700'
+
+#  - name: Tworzymybaze
+#    shell: "{{ item }}"
+#    args:
+#      chdir: "{{ dst_psql }}"
+#    with_items:
+#        - "{{ uinitdb }}"
+
+#  - name: "Extract {{ utemp }}/certyfikaty.zip"
+#    unarchive:
+#      src:  "{{utemp}}/certyfikaty.zip"
+#      dest:  "{{ ubaza }}/"
+#      remote_src: yes
+
+#  - name: Copy cert file
+#    copy:
+#      src: "{{ ubaza }}/certyfikaty/"
+#      dest: "{{ ubaza }}"
+#      owner: "{{uuser}}"
+#      group: "{{uuser}}"
+#      mode: '0600'
+#      remote_src: yes
+
+#  - name: Change file ownership, group and permissions .crt
+#    file:
+#      path: "{{ ubaza }}/server.crt"
+#      owner: "{{uuser}}"
+#      group: "{{uuser}}"
+#      mode: '0600'
+#
+#  - name: Change file ownership, group and permissions .key
+#    file:
+#      path: "{{ ubaza }}/server.key"
+#      owner: "{{uuser}}"
+#      group: "{{uuser}}"
+#      mode: '0600'
+#
+#  - name: Change file ownership, group and permissions .req
+#    file:
+#      path: "{{ ubaza }}/server.req"
+#      owner: "{{uuser}}"
+#      group: "{{uuser}}"
+#      mode: '0600'
+
+#  - name: Replace pg_hba.conf
+#    lineinfile:
+#      path: "{{ ubaza }}/pg_hba.conf"
+#      regexp: "^host    all             all             ::1/128                 trust"
+#      line: host    all             all             127.0.0.1/32            password
+
+#  - name: Copy postgresql.conf
+#    copy:
+#      src: "{{ utemp }}/postgresql.conf"
+#      dest: "{{ ubaza }}"
+#      owner: "{{uuser}}"
+#      group: "{{uuser}}"
+#      mode: '0640'
+#      remote_src: yes
+
+#  - name: Copy service
+#    copy:
+#      src: "{{ utemp }}/postgresql10.8"
+#      dest: /etc/init.d
+#      mode: '0750'
+#      remote_src: yes
+
+#  - name: Recursively change ownership of a directory
+#    file:
+#      path: "{{ubaza}}"
+#      state: directory
+#      recurse: yes
+#      owner: "{{uuser}}"
+#      group: "{{uuser}}"
+#      mode: '0700'
+#
+#  - name: Enable service
+#    shell: "{{ item }}"
+#    args:
+#      chdir: /etc/init.d
+#    with_items:
+#      - /usr/sbin/update-rc.d postgresql10.8 defaults
+#      - /etc/init.d/postgresql10.8 start
